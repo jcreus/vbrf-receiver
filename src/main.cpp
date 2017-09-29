@@ -25,8 +25,8 @@
 #include <RH_RF24.h>
 
 
-const int MESSAGE_LENGTH = 35;
-#define NPAR 25
+const int MESSAGE_LENGTH = 50;
+#define NPAR 40
 
 #include "ecc.h"
 
@@ -127,10 +127,14 @@ int main() {
         unsigned char copied[256];
         memcpy(copied, data, 256);
         decode_data(copied, MESSAGE_LENGTH+NPAR);
+        int correct = true;
         if (check_syndrome () != 0) {
           Serial.println("There were errors");
 
-          correct_errors_erasures(copied, MESSAGE_LENGTH+NPAR, 0, NULL);
+          correct = correct_errors_erasures(copied, MESSAGE_LENGTH+NPAR, 0, NULL);
+          if (correct) {
+            Serial.println("Corrected successfully.");
+          }
         } else {
           Serial.println("No errors");
         }
